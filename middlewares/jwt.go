@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Zhangbokai614/go-template/utils"
@@ -8,8 +9,8 @@ import (
 )
 
 const (
-	ContextKeyUserID   = "custom-user-id"
-	ContextKeyUserUnit = "custom-user-unit"
+	ContextKeyUserID  = "custom-user-id"
+	ContextKeyUserRID = "custom-user-rid"
 )
 
 func JwtAuthMiddleware() gin.HandlerFunc {
@@ -21,14 +22,16 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		id, err := utils.ExtractTokenID(c)
+		id, rid, err := utils.ExtractTokenID(c)
 		if err != nil {
 			c.String(http.StatusUnauthorized, "message: Extract token name fail")
 			c.Abort()
 			return
 		}
 
+		fmt.Println("jwt------", id, rid)
 		c.Set(ContextKeyUserID, id)
+		c.Set(ContextKeyUserRID, rid)
 
 		c.Next()
 	}

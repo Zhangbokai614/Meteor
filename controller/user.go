@@ -87,7 +87,7 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-	token, err := utils.GenerateToken(result.ID)
+	token, err := utils.GenerateToken(result.ID, result.RID)
 	if err != nil {
 		middlewares.LogError(c, err)
 		c.JSON(http.StatusForbidden, &gin.H{"message": "Failed to apply for token"})

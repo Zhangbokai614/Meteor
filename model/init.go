@@ -3,8 +3,10 @@ package model
 import (
 	"fmt"
 
+	"github.com/Zhangbokai614/go-template/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 var conn *gorm.DB
@@ -14,8 +16,12 @@ const (
 	password = "123456"
 	host     = "10.0.1.182"
 	port     = "3306"
-	Database = "user"
+	Database = "testing"
 	charset  = "utf8mb4"
+
+	adminUserName = "admin"
+	AdminRoleName = "admin"
+	adminRouter   = "admin"
 )
 
 var (
@@ -46,15 +52,34 @@ func init() {
 		panic(err)
 	}
 
-	db, err := conn.DB()
-	if err != nil {
-		panic(err)
-	}
-
-	db.SetConnMaxIdleTime(0)
-	db.SetConnMaxLifetime(0)
-
 	conn.Exec("CREATE DATABASE IF NOT EXISTS " + Database + " DEFAULT CHARACTER SET " + charset)
+	conn.Exec("USE " + Database)
 
 	conn.AutoMigrate(&User{})
+	conn.AutoMigrate(&Role{})
+	conn.AutoMigrate(&RolePermissions{})
+	conn.AutoMigrate(&Permissions{})
+
+	userPermissions := []*Permissions{
+		{RouterPermissions: adminRouter},
+		{RouterPermissions: "/api/v1/user/create"},
+		{RouterPermissions: "/api/v1/permissions/create/role"},
+		{RouterPermissions: "/api/v1/permissions/query/role"},
+		{RouterPermissions: "/api/v1/permissions/modify/role/permissions"},
+	}
+	conn.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(userPermissions)
+
+	role := &Role{
+		Name: AdminRoleName,
+	}
+	conn.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(role)
+
+	rp := &RolePermissions{
+		PID: userPermissions[0].ID,
+		RID: role.ID,
+	}
+	fmt.Println("----", userPermissions[0].ID, role.ID)
+	conn.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(&rp)
+
+	conn.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(&User{Name: adminUserName, RID: role.ID, Password: utils.Md5Encode("123456")})
 }

@@ -7,6 +7,7 @@ import (
 
 func CreateUser(apiUser *model.APIUser) error {
 	user := &model.User{
+		RID:      apiUser.RID,
 		Name:     apiUser.Name,
 		Password: utils.Md5Encode(apiUser.Password),
 	}
@@ -45,7 +46,7 @@ func UserIDIsExists(id uint) bool {
 func QueryUserByName(name string) (*model.User, error) {
 	result := &model.User{}
 
-	if err := model.GetDBConnection().Select("id", "unit", "password").Where("name = ?", name).First(&result).Error; err != nil {
+	if err := dbConn.Select("id", "r_id", "password").Where("name = ?", name).First(&result).Error; err != nil {
 		return nil, err
 	}
 
