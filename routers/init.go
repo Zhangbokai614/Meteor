@@ -23,4 +23,5 @@ func Init(router *gin.Engine) {
 	permissions.POST("/query/permissions", controller.QueryPermissions)
 	permissions.POST("/delete/role", controller.DeleteRole)
 	permissions.POST("/modify/role/permissions", controller.ModifyRolePermissions)
+	permissions.POST("/modify/user/role", controller.ModifyUserRole)
 }

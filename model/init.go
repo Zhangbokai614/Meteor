@@ -78,7 +78,6 @@ func init() {
 		PID: userPermissions[0].ID,
 		RID: role.ID,
 	}
-	fmt.Println("----", userPermissions[0].ID, role.ID)
 	conn.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(&rp)
 
 	conn.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(&User{Name: adminUserName, RID: role.ID, Password: utils.Md5Encode("123456")})

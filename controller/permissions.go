@@ -139,7 +139,53 @@ func ModifyRolePermissions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, &gin.H{
-		"message": "Create role success",
+		"message": "Modify role success",
+	})
+
+	return
+}
+
+func ModifyUserRole(c *gin.Context) {
+	var data struct {
+		Name string `json:"name" binding:"required"`
+		RID  uint   `json:"r_id" binding:"required"`
+	}
+
+	if err := c.BindJSON(&data); err != nil {
+		middlewares.LogError(c, err)
+		c.JSON(http.StatusBadRequest, &gin.H{
+			"message": "Invalid Parameter",
+		})
+
+		return
+	}
+
+	if !service.UserNameIsExists(data.Name) {
+		c.JSON(StatusUserError, &gin.H{
+			"message": ErrorUserDoesNotExists.Error(),
+		})
+
+		return
+	}
+
+	if !service.RoleIDIsExists(data.RID) {
+		c.JSON(http.StatusBadRequest, &gin.H{
+			"message": errorRoleNotExists.Error(),
+		})
+
+		return
+	}
+
+	if err := service.ModifyUserRole(data.Name, data.RID); err != nil {
+		c.JSON(http.StatusInternalServerError, &gin.H{
+			"message": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, &gin.H{
+		"message": "Modify user role success",
 	})
 
 	return

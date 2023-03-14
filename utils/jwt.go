@@ -14,7 +14,6 @@ const secret = "XXXXXXX"
 
 func GenerateToken(userID, rid uint) (string, error) {
 	const tokenExpireDuration = time.Hour * 24
-	fmt.Println("g-jwt---", userID, rid)
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = userID

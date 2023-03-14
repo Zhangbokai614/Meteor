@@ -52,7 +52,19 @@ func RoleNameIsExists(name string) bool {
 		Name: name,
 	}
 
-	if r := dbConn.Model(role).Select("name").Where(role).Find(role).RowsAffected; r > 0 {
+	if r := dbConn.Model(role).Select("name").Where(role).Find(&role).RowsAffected; r > 0 {
+		return true
+	}
+
+	return false
+}
+
+func RoleIDIsExists(rid uint) bool {
+	role := &model.Role{
+		ID: rid,
+	}
+
+	if r := dbConn.Model(role).Select("id").Where(role).Find(&role).RowsAffected; r > 0 {
 		return true
 	}
 
@@ -134,4 +146,13 @@ func ModifyRolePermissions(r *model.APIRole) error {
 
 		return nil
 	})
+}
+
+func ModifyUserRole(name string, rid uint) error {
+	newRole := &model.User{RID: rid}
+	if err := dbConn.Model(newRole).Where("name = ?", name).Update("r_id", newRole.RID).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

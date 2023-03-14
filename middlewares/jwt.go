@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Zhangbokai614/go-template/utils"
@@ -29,7 +28,6 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("jwt------", id, rid)
 		c.Set(ContextKeyUserID, id)
 		c.Set(ContextKeyUserRID, rid)
 
