@@ -65,6 +65,10 @@ func init() {
 		{RouterPermissions: "/api/v1/user/create"},
 		{RouterPermissions: "/api/v1/permissions/create/role"},
 		{RouterPermissions: "/api/v1/permissions/query/role"},
+		{RouterPermissions: "/api/v1/permissions/delete/role"},
+		{RouterPermissions: "/api/v1/permissions/modify/role/permissions"},
+		{RouterPermissions: "/api/v1/permissions/modify/user/role"},
+		{RouterPermissions: "/api/v1/permissions//query/permissions"},
 		{RouterPermissions: "/api/v1/permissions/modify/role/permissions"},
 	}
 	conn.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(userPermissions)
